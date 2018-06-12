@@ -1,0 +1,17 @@
+JSon -
+ 
+right click on References, check System.Web.Extensions
+
+and at the top of your project add this:
+
+Using System.Web.Script.Serialization;
+Using System.IO
+
+
+for json.net
+
+in solution explorer right click on the name of the project
+ next Manage NuGetPackages, in the right corner type json, choose Json.NET
+and include: using Newtonsoft.Json
+Using System.IO
+

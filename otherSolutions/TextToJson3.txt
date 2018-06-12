@@ -1,0 +1,132 @@
+using System;
+using System.Collections.Generic;
+using System.Text;
+using System.Web.Script.Serialization;
+using Newtonsoft.Json;
+using System.Runtime.Serialization;
+using System.Runtime.Serialization.Json;
+using System.IO;
+
+
+namespace ConsoleApp2
+{
+
+
+
+
+
+    [DataContract]
+    class EURUSDDB
+    {
+        [DataMember]
+        public string Date { get; set; }
+
+        [DataMember]
+        public string Time { get; set; }
+
+        [DataMember]
+        public string Open { get; set; }
+
+        [DataMember]
+        public string High { get; set; }
+
+        [DataMember]
+        public string Low { get; set; }
+
+        [DataMember]
+        public string Close { get; set; }
+
+        [DataMember]
+        public string Volume { get; set;
+        }
+
+
+        public override string ToString()
+        {
+            return string.Format("Date: {0} \nTime: {1} \nOpen: {2} \nHigh: {3} \nLow: {4} \nClose: {5} \nVolume: {6}", Date, Time, Open, High, Low, Close, Volume);
+        }
+
+
+
+    }
+
+  
+
+
+
+    class Program
+    {
+
+        static List<EURUSDDB> getData(string path)
+        {
+            List<EURUSDDB> list = new List<EURUSDDB>();
+
+            foreach (string line in File.ReadAllLines(path))
+            {
+                string[] attr = line.Split(',');
+                for (int i = 0; i < attr.Length; i++)
+                {
+                    if ("(null)".Equals(attr[i])) attr[i] = "-";
+                    if (attr[i] == null) attr[i] = "-";
+
+                }
+
+                EURUSDDB item = new EURUSDDB();
+                item.Date =   attr[0];
+                item.Time =   attr[1];
+                item.Open =   attr[2];
+                item.High =   attr[3];
+                item.Low =    attr[4];
+                item.Close =  attr[5];
+                item.Volume = attr[6];
+
+
+                list.Add(item);
+            }
+
+
+            return list;
+        }
+
+
+      
+
+
+
+        static void Main(string[] args)
+        {
+            string path = "C:\\Users\\seraph\\source\\repos\\ConsoleApp2\\ConsoleApp2\\bin\\Debug\\myfile88.json";
+           
+           /* List<EURUSDDB> list = getData("C:\\Users\\seraph\\Desktop\\EURUSD07.txt.txt");
+            string output = Newtonsoft.Json.JsonConvert.SerializeObject(list);
+            File.AppendAllText(path, output);
+           */
+
+            //deserialize JSON from file
+            /*String JSONstring = File.ReadAllText(path);
+            JavaScriptSerializer ser = new JavaScriptSerializer();
+            EURUSDDB p1 = ser.Deserialize<EURUSDDB>(JSONstring);
+            Console.WriteLine(p1);
+            **/
+
+
+           String JSONstring = File.ReadAllText(path);
+            List<EURUSDDB> myList   = JsonConvert.DeserializeObject<List<EURUSDDB>>(JSONstring);
+            myList.ForEach(Console.WriteLine);
+            Console.ReadLine();
+
+
+            /* string jsonString = JSONstring;
+
+             DataContractJsonSerializer ser = new DataContractJsonSerializer(typeof(List<EURUSDDB>));
+             MemoryStream stream = new MemoryStream(Encoding.UTF8.GetBytes(jsonString));
+             var obj = (List<EURUSDDB>)ser.ReadObject(stream);
+
+             foreach (EURUSDDB p in obj)
+                 Console.WriteLine("Date: {0} - Time: {1} - Open: {2} - High: {3} - Low: {4} - Close: {5} - Volume: {6}", p.Date, p.Time, p.Open, p.High, p.Low, p.Close, p.Volume);
+             Console.ReadLine();
+             */
+        }
+      
+    }
+}

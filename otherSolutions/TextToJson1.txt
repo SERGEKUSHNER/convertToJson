@@ -1,0 +1,82 @@
+using System;
+using System.Collections.Generic;
+using System.Text;
+using System.Web.Script.Serialization;
+using Newtonsoft.Json;
+
+using System.IO;
+
+
+namespace MeteoJson
+{
+
+    class EURUSDDB
+    {
+        public DateTime Date { get; set; }
+        
+        public DateTime Time{ get; set; }
+
+        public Double Open { get; set; }
+
+        public Double High { get; set; }
+
+        public Double Low { get; set; }
+
+        public Double Close { get; set; }
+
+        public Double Volume { get; set; }
+
+       
+
+    }
+
+
+
+    class Program
+    {
+
+        static List<EURUSDDB> getData(string path)
+        {
+            List<EURUSDDB> list = new List<EURUSDDB>();
+
+            foreach (string line in File.ReadAllLines(path))
+            {
+                string[] attr = line.Split(',');
+                for (int i = 0; i < attr.Length; i++)
+                {
+                    if ("(null)".Equals(attr[i])) attr[i] = "-";
+                    if (attr[i] == null) attr[i] = "-";
+
+                }
+
+                EURUSDDB item = new EURUSDDB();
+                item.Date = DateTime.Parse(attr[0]);
+                item.Time = DateTime.Parse(attr[1]);
+                item.Open = Double.Parse(attr[2]);
+                item.High =Double.Parse(attr[3]);
+                item.Low = Double.Parse(attr[4]);
+                item.Close = Double.Parse(attr[5]);
+                item.Volume = Double.Parse(attr[6]);
+
+
+                list.Add(item);
+            }
+
+
+            return list;
+        }
+
+
+      
+
+
+
+        static void Main(string[] args)
+        {
+            List<EURUSDDB> list = getData("C:\\Users\\seraph\\Desktop\\EURUSD1.txt");
+            string output = Newtonsoft.Json.JsonConvert.SerializeObject(list);
+            File.AppendAllText("C:\\Users\\seraph\\source\\repos\\ConsoleApp2\\ConsoleApp2\\bin\\Debug\\myfile777.json", output);
+
+        }
+    }
+}
